@@ -10,8 +10,33 @@ project(
     LANGUAGES CXX
 )
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
+
+# set(OpenGL_GL_PREFERENCE GLVND)
+
+# ---- Enable Utile ----
+include(cmake/utile/ccache.cmake)
+# include(cmake/utile/lto.cmake)
+# include(cmake/utile/ninja_color.cmake)
+# include(cmake/lib/backward-cpp.cmake)
+
+# ---- Download and install dependencies
+
+# ---- Enable Utile ----
+find_package(OpenMP 3.0)
+
+set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/3rd-party" CACHE BOOL "" FORCE)
+set(FETCHCONTENT_QUIET FALSE CACHE BOOL "" FORCE)
+
+include(cmake/lib/raylib.cmake)
+include(cmake/lib/raygui.cmake)
+include(cmake/lib/raylib-cpp.cmake)
+include(cmake/lib/vector.cmake)
 
 # ---- Declare library ----
 
