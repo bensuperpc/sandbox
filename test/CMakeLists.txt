@@ -46,7 +46,7 @@ include(../cmake/lib/benchmark.cmake)
   add_test_fn(sandbox_test)
   
   # Add bench
-  #add_bench_fn(game-of-life-bench)
+  #add_bench_fn(sandbox_bench)
 endif()
 
 
