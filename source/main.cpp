@@ -3,7 +3,19 @@
 
 #include "raylib-cpp.hpp"
 #include "raylib.h"
-#include "vector/multi_array.hpp"
+#include "sandbox.hpp"
+
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+#  if __has_include("omp.h")
+#    include <omp.h>
+#  else
+#    if _MSC_VER && !__INTEL_COMPILER
+#      pragma message("Can t find omp.h, please install OpenMP")
+#    else
+#      warning Can t find omp.h, please install OpenMP.
+#    endif
+#  endif
+#endif
 
 auto main() -> int
 {
@@ -12,31 +24,23 @@ auto main() -> int
   const uint32_t targetFPS = 120;
   const uint32_t gridUpdatePerSecond = 10;
 
-  const float gridOffsetX = 0.0f;
-  const float gridOffsetY = 0.0f;
-
   SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
 
   raylib::Window window(screenWidth, screenHeight, "raylib-cpp game of life");
 
+  raylib::Image gridImage(screenWidth, screenHeight, RAYWHITE);
+
+  Color* pixels;
+
+  raylib::Texture gridTexture(gridImage);
+
   SetTargetFPS(targetFPS);
 
-  // auto gol = benlib::Gol(screenWidth, screenHeight);
-
-  float cellXSize = 10.0f;
-  float cellYSize = 10.0f;
-
-  raylib::Camera2D camera = {};
-  camera.target = (Vector2) {screenWidth / 2.0f + gridOffsetX,
-                             screenHeight / 2.0f + gridOffsetY};
-  camera.offset = (Vector2) {screenWidth / 2.0f, screenHeight / 2.0f};
-  camera.rotation = 0.0f;
-  camera.zoom = 1.0f;
+  auto sandbox = benlib::Gol(screenWidth, screenHeight);
 
   uint64_t framesCounter = 0;
 
   bool paused = false;
-  bool displayGrid = false;
   bool displayHelp = true;
 
   while (!WindowShouldClose()) {
@@ -45,36 +49,11 @@ auto main() -> int
     Vector2 mousePosition = GetMousePosition();
 
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-      Vector2 vect = camera.GetScreenToWorld(mousePosition);
-
-      // Apply grid offset
-      vect.x -= gridOffsetX;
-      vect.y -= gridOffsetY;
-
-      auto x = static_cast<int64_t>(vect.x / cellXSize);
-      auto y = static_cast<int64_t>(vect.y / cellYSize);
-
-      /*
-      if (x >= 0 && x < gol.GetWidth() && y >= 0 && y < gol.GetHeight()) {
-        gol.SetCell(x, y, true);
-      }
-      */
+      sandbox.Circle(mousePosition.x, mousePosition.y, 20, 1);
     }
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON)) {
-      Vector2 vect = camera.GetScreenToWorld(mousePosition);
-
-      // Apply grid offset
-      vect.x -= gridOffsetX;
-      vect.y -= gridOffsetY;
-
-      auto x = static_cast<int64_t>(vect.x / cellXSize);
-      auto y = static_cast<int64_t>(vect.y / cellYSize);
-      /*
-      if (x >= 0 && x < gol.GetWidth() && y >= 0 && y < gol.GetHeight()) {
-        gol.SetCell(x, y, false);
-      }
-      */
+      sandbox.Circle(mousePosition.x, mousePosition.y, 20, 0);
     }
 
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_P)) {
@@ -86,17 +65,13 @@ auto main() -> int
     }
 
     if (IsKeyPressed(KEY_U)) {
-      const std::string filename = "gol.txt";
-      // gol.Serialize(filename);
+      const std::string filename = "sandbox.txt";
+      sandbox.Serialize(filename);
     }
 
     if (IsKeyPressed(KEY_L)) {
-      const std::string filename = "gol.txt";
-      // gol.Deserialize(filename);
-    }
-
-    if (IsKeyPressed(KEY_G)) {
-      displayGrid = !displayGrid;
+      const std::string filename = "sandbox.txt";
+      sandbox.Deserialize(filename);
     }
 
     if (IsKeyPressed(KEY_H)) {
@@ -104,140 +79,65 @@ auto main() -> int
     }
 
     if (framesCounter % (targetFPS / gridUpdatePerSecond) == 0 && !paused) {
-      // gol.Update();
-    }
-
-    if (IsKeyDown(KEY_LEFT)) {
-      camera.target.x -= 5.0f;
-    }
-    if (IsKeyDown(KEY_RIGHT)) {
-      camera.target.x += 5.0f;
-    }
-    if (IsKeyDown(KEY_UP)) {
-      camera.target.y -= 5.0f;
-    }
-    if (IsKeyDown(KEY_DOWN)) {
-      camera.target.y += 5.0f;
+      sandbox.Update();
     }
 
     if (IsKeyPressed(KEY_C)) {
-      // gol.Reset();
+      sandbox.Reset();
     }
 
     if (IsKeyPressed(KEY_R)) {
-      // gol.RandomFill();
+      sandbox.RandomFill();
     }
 
-    if (IsKeyPressed(KEY_B)) {
-      camera.zoom = 1.0f;
-      camera.rotation = 0.0f;
-      camera.target = (Vector2) {screenWidth / 2.0f + gridOffsetX,
-                                 screenHeight / 2.0f + gridOffsetY};
-    }
+    // Not need, all cells are override
+    // gridImage.ColorTint(RAYWHITE);
 
-    if (IsKeyDown(KEY_A)) {
-      camera.rotation--;
-    }
-
-    if (IsKeyDown(KEY_S)) {
-      camera.rotation++;
-    }
-
-    if (camera.rotation > 40) {
-      camera.rotation = 40;
-    }
-
-    if (camera.rotation < -40) {
-      camera.rotation = -40;
-    }
-
-    camera.zoom += ((float)GetMouseWheelMove() * 0.10f);
-    if (camera.zoom > 35.0f)
-      camera.zoom = 5.0f;
-    else if (camera.zoom < 0.01f)
-      camera.zoom = 0.01f;
-
-    BeginDrawing();
-
-    ClearBackground(RAYWHITE);
-
-    BeginMode2D(camera);
-    // Drawing world
-
-    // Draw only on screen
-    Vector2 vectH = camera.GetScreenToWorld((Vector2) {0.0f, 0.0f});
-    Vector2 vectB = camera.GetScreenToWorld((Vector2) {
-        static_cast<float>(screenWidth), static_cast<float>(screenHeight)});
-
-    // Apply grid offset
-    vectH.x -= gridOffsetX;
-    vectH.y -= gridOffsetY;
-    vectB.x -= gridOffsetX;
-    vectB.y -= gridOffsetY;
-
-    int64_t xStart = static_cast<int64_t>(vectH.x / cellXSize) - 1;
-    int64_t yStart = static_cast<int64_t>(vectH.y / cellYSize) - 1;
-
-    int64_t xEnd = static_cast<int64_t>(vectB.x / cellXSize) + 1;
-    int64_t yEnd = static_cast<int64_t>(vectB.y / cellYSize) + 1;
-
-    if (xStart > xEnd) {
-      std::swap(xStart, xEnd);
-    }
-    if (yStart > yEnd) {
-      std::swap(yStart, yEnd);
-    }
-
-    // Avoid out of bounds of the grid
-    if (xStart < 0) {
-      xStart = 0;
-    }
-    if (yStart < 0) {
-      yStart = 0;
-    }
-
-    /*
-    if (xEnd > gol.GetWidth()) {
-      xEnd = gol.GetWidth();
-    }
-    if (yEnd > gol.GetHeight()) {
-      yEnd = gol.GetHeight();
-    }
-    */
-
+#if defined(_OPENMP)
+#  pragma omp parallel for collapse(2) schedule(auto)
+#endif
     // Draw grid
-    for (uint64_t x = xStart; x < xEnd; x++) {
-      for (uint64_t y = yStart; y < yEnd; y++) {
+    for (uint64_t x = 0; x < screenWidth; x++) {
+      for (uint64_t y = 0; y < screenHeight; y++) {
         // If cell is alive
-        // if (gol.GetCell(x, y)) {
-        if (true) {
-          DrawRectangle(static_cast<int>(x * cellXSize + gridOffsetX),
-                        static_cast<int>(y * cellYSize + gridOffsetY),
-                        static_cast<int>(cellXSize),
-                        static_cast<int>(cellYSize),
-                        BLACK);
+        if (sandbox.GetCell(x, y) == 0) {
+          gridImage.DrawPixel(
+              static_cast<int>(x), static_cast<int>(y), LIGHTGRAY);
+        } else if (sandbox.GetCell(x, y) == 1) {
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), BLACK);
+        } else if (sandbox.GetCell(x, y) == 2) {
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), YELLOW);
+        } else if (sandbox.GetCell(x, y) == 3) {
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), RED);
+        } else if (sandbox.GetCell(x, y) == 4) {
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), GREEN);
+        } else if (sandbox.GetCell(x, y) == 5) {
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), BLUE);
+        } else if (sandbox.GetCell(x, y) == 6) {
+          gridImage.DrawPixel(
+              static_cast<int>(x), static_cast<int>(y), MAGENTA);
+        } else if (sandbox.GetCell(x, y) == 7) {
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), LIME);
         } else {
-          DrawRectangle(static_cast<int>(x * cellXSize + gridOffsetX),
-                        static_cast<int>(y * cellYSize + gridOffsetY),
-                        static_cast<int>(cellXSize),
-                        static_cast<int>(cellYSize),
-                        LIGHTGRAY);
-        }
-
-        if (displayGrid) {
-          DrawRectangleLinesEx(
-              (Rectangle) {static_cast<float>(x * cellXSize + gridOffsetX),
-                           static_cast<float>(y * cellYSize + gridOffsetY),
-                           static_cast<float>(cellXSize),
-                           static_cast<float>(cellYSize)},
-              0.7f,
-              BLACK);
+          gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), WHITE);
         }
       }
     }
 
-    EndMode2D();
-    // Drawing interface
+    pixels = gridImage.LoadColors();
+
+    gridTexture.Update(pixels);
+    UnloadImageColors(pixels);
+
+    BeginDrawing();
+
+    DrawTexture(gridTexture, 0, 0, WHITE);
+
+    ClearBackground(RAYWHITE);
+
+    // DrawTextureRec(gridTexture.texture, (Rectangle) { 0, 0,
+    // (float)gridTexture.texture.width, (float)-gridTexture.texture.height },
+    // (Vector2) { 0, 0 }, WHITE);
 
     if (displayHelp) {
       DrawRectangle(10, 10, 250, 113, Fade(SKYBLUE, 0.95f));
@@ -256,7 +156,7 @@ auto main() -> int
       DrawText("- R to random values", 40, 153, 10, DARKGRAY);
       DrawText("- C to clear game", 40, 173, 10, DARKGRAY);
       DrawText("- Space to pause", 40, 193, 10, DARKGRAY);
-      DrawText("- G to display grid (Less perf)", 40, 213, 10, DARKGRAY);
+      DrawText("- ---------------", 40, 213, 10, DARKGRAY);
       DrawText("- H to display help", 40, 233, 10, DARKGRAY);
       DrawText("- U to Serialize, L to Deserialize", 40, 253, 10, DARKGRAY);
     }
@@ -273,16 +173,3 @@ auto main() -> int
 
   return 0;
 }
-
-/*#include <iostream>
-#include <string>
-
-#include "lib.hpp"
-
-auto main() -> int
-{
-  auto const lib = library {};
-  auto const message = "Hello from " + lib.name + "!";
-  std::cout << message << '\n';
-  return 0;
-}*/

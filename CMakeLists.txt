@@ -39,7 +39,7 @@ include(cmake/lib/raylib-cpp.cmake)
 include(cmake/lib/vector.cmake)
 
 # ---- Declare library ----
-
+#[[
 add_library(
     sandbox_lib OBJECT
     source/lib.cpp
@@ -52,6 +52,8 @@ target_include_directories(
 )
 
 target_compile_features(sandbox_lib PUBLIC cxx_std_20)
+]]
+add_subdirectory(source/lib)
 
 # ---- Declare executable ----
 
@@ -63,6 +65,10 @@ set_target_properties(
     OUTPUT_NAME sandbox
     EXPORT_NAME exe
 )
+
+if (OpenMP_FOUND OR OpenMP_CXX_FOUND)
+target_link_libraries(sandbox_exe PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 target_compile_features(sandbox_exe PRIVATE cxx_std_20)
 
