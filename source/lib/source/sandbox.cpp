@@ -5,7 +5,14 @@ benlib::Gol::Gol() {}
 benlib::Gol::Gol(const uint64_t width, const uint64_t height)
 {
   std::vector<uint64_t> v = {width, height};
-  this->grid2D = benlib::multi_array<benlib::cell>(v);
+  this->grid2D.set_dim(v);
+  auto data = this->grid2D.data();
+  for (uint64_t i = 0; i < width * height; i++) {
+    data->emplace_back(std::make_unique<benlib::air>());
+  }
+
+  // Get get_id() from cell
+  // std::cout << data->at(0).get()->get_id() << std::endl;
 
   map_type[0] = new benlib::air();
   map_type[1] = new benlib::water();
@@ -71,40 +78,13 @@ void benlib::Gol::Resize(const uint64_t width, const uint64_t height)
 
 void benlib::Gol::Reset()
 {
-  benlib::air air;
-  this->Fill(air);
-}
+  grid2D.clear();
 
-uint64_t benlib::Gol::GetLivingCells()
-{
-  /*
-  auto* gridPtr = grid2D.data();
-  uint64_t livingCell = 0;
-  for (uint64_t x = 0; x < GetWidth() * GetHeight(); x++) {
-    if ((*gridPtr)[x]) {
-      ++livingCell;
-    }
+  auto data = this->grid2D.data();
+  for (uint64_t i = 0; i < GetWidth() * GetHeight(); i++) {
+    auto cell = std::make_unique<benlib::air>();
+    data->emplace_back(std::move(cell));
   }
-
-  return livingCell;
-  */
-  return 0;
-}
-
-uint64_t benlib::Gol::GetDeadCells()
-{
-  /*create
-  auto* gridPtr = grid2D.data();
-  uint64_t deadCell = 0;
-  for (uint64_t x = 0; x < GetWidth() * GetHeight(); x++) {
-    if (!(*gridPtr)[x]) {
-      ++deadCell;
-    }
-  }
-
-  return deadCell;
-  */
-  return 0;
 }
 
 uint64_t benlib::Gol::GetCells()
@@ -122,6 +102,7 @@ void benlib::Gol::SetGenerations(const uint64_t _generations)
   this->generations = _generations;
 }
 
+/*
 std::vector<benlib::cell> benlib::Gol::GetGrid()
 {
   return grid2D.GetGrid();
@@ -132,30 +113,34 @@ void benlib::Gol::SetGrid(const std::vector<benlib::cell>& _grid)
   grid2D.SetGrid(_grid);
 }
 
+*/
 void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const benlib::cell& cell)
 {
-  grid2D.set_value(x * GetHeight() + y, cell);
+  // grid2D.set_value(x * GetHeight() + y, std::move(cell));
 }
 
 void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const uint64_t id_map)
 {
-  /*
+  // auto cell = std::make_unique<benlib::air>();
+  // grid2D.set_value(x * GetHeight() + y, std::move(cell));
+
   auto it = map_type.find(id_map);
-  
+
   if (it != map_type.end()) {
     auto cell = it->second->create();
-    //cell->class_name();
-    grid2D.set_value(x * GetHeight() + y, *cell);
-    grid2D.get_value(x * GetHeight() + y).class_name();
+    grid2D.set_value(x * GetHeight() + y, std::move(cell));
+    auto _cell = GetCell(x, y);
+    // _cell->class_name();
   } else {
-    grid2D.set_value(x * GetHeight() + y, benlib::air());
+    grid2D.set_value(x * GetHeight() + y, std::move(std::make_unique<benlib::air>()));
   }
-  */
 }
 
-benlib::cell benlib::Gol::GetCell(const uint64_t x, const uint64_t y)
+benlib::cell* benlib::Gol::GetCell(const uint64_t x, const uint64_t y)
 {
-  return grid2D.get_value(x * GetHeight() + y);
+  uint64_t coord = x * GetHeight() + y;
+  auto data = this->grid2D.data();
+  return data->at(coord).get();
 }
 
 void benlib::Gol::Print()
@@ -216,8 +201,9 @@ uint64_t benlib::Gol::GetNeighborsCount(const std::vector<benlib::cell>& _grid,
 void benlib::Gol::Update()
 {
   generations++;
+
   // Copy grid to gridB
-  std::vector<benlib::cell> gridB(grid2D.GetGrid());
+  // std::vector<benlib::cell> gridB(grid2D.GetGrid());
 #if defined(_OPENMP)
 #  pragma omp parallel for collapse(2) schedule(auto)
 #endif
@@ -257,7 +243,7 @@ void benlib::Gol::RandomFill()
 
 void benlib::Gol::Fill(const benlib::cell& value)
 {
-  grid2D.fill(value);
+  // grid2D.fill(value);
 }
 
 bool benlib::Gol::operator==(const benlib::Gol& other) const
@@ -301,13 +287,14 @@ void benlib::Gol::Circle(const uint64_t x, const uint64_t y, const uint64_t r, c
   }
 }
 
+/*
 benlib::cell benlib::Gol::operator()(const uint64_t x, const uint64_t y)
 {
   std::vector<uint64_t> coor {x, y};
   return grid2D.get_value(coor);
 }
 
-/*
+
 void benlib::Gol::Deserialize(const std::string& filename)
 {
   std::ifstream file(filename);

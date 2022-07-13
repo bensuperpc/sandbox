@@ -10,7 +10,7 @@ benlib::water::~water() {}
 
 std::unique_ptr<benlib::cell> benlib::water::create()
 {
-  return std::make_unique<water>();
+  return std::move(std::make_unique<water>());
 }
 
 void benlib::water::class_name()

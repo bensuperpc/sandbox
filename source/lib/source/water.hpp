@@ -5,7 +5,7 @@
 
 namespace benlib
 {
-class water : public virtual cell
+class water : public cell
 {
 public:
   water();
@@ -13,7 +13,6 @@ public:
 
   std::unique_ptr<cell> create() override;
   void class_name() override;
-
 };
 
 }  // namespace benlib

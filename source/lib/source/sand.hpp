@@ -5,7 +5,7 @@
 
 namespace benlib
 {
-class sand : public virtual cell
+class sand : public cell
 {
 public:
   sand();

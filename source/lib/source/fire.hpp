@@ -5,7 +5,7 @@
 
 namespace benlib
 {
-class fire : public virtual cell
+class fire : public cell
 {
 public:
   fire();

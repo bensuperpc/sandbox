@@ -43,7 +43,7 @@ auto main() -> int
 
   SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
 
-  raylib::Window window(screenWidth, screenHeight, "raylib-cpp game of life");
+  raylib::Window window(screenWidth, screenHeight, "sandbox by Bensuperpc");
 
   SetTargetFPS(targetFPS);
 
@@ -57,7 +57,6 @@ auto main() -> int
 
   uint64_t selectedColor = 1;
   uint64_t colorMouseHover = -1;
-
   auto sandbox = benlib::Gol(screenWidth, screenHeight);
 
   uint64_t framesCounter = 0;
@@ -122,14 +121,13 @@ auto main() -> int
       brushSize = 2;
     if (brushSize > 70)
       brushSize = 70;
-
 #if defined(_OPENMP)
 #  pragma omp parallel for collapse(2) schedule(auto)
 #endif
     // Update image
     for (uint64_t x = 0; x < screenWidth; x++) {
       for (uint64_t y = 0; y < screenHeight; y++) {
-        gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), colors[sandbox.GetCell(x, y).get_id()]);
+        gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), colors[(*sandbox.GetCell(x, y)).get_id()]);
       }
     }
 

@@ -52,10 +52,6 @@ public:
   uint64_t GetWidth();
   // Get the height of the game of life.
   uint64_t GetHeight();
-  // Get the number of living cells.
-  uint64_t GetLivingCells();
-  // Get the number of dead cells.
-  uint64_t GetDeadCells();
   // Get the number of cells.
   uint64_t GetCells();
   // Get the number of generations.
@@ -68,7 +64,7 @@ public:
   // Set row
   void SetRow(const uint64_t row, const std::vector<benlib::cell>& rowData);
   // Get the cell at the given coordinates.
-  benlib::cell GetCell(const uint64_t x, const uint64_t y);
+  benlib::cell* GetCell(const uint64_t x, const uint64_t y);
   // Get the row at the given coordinates.
   std::vector<benlib::cell> GetRow(const uint64_t y);
   // Get grid.
@@ -121,10 +117,9 @@ protected:
   // The number of generations.
   uint64_t generations = 0;
   // The game of life grid.
-  benlib::multi_array<benlib::cell> grid2D;
-  benlib::multi_array<std::unique_ptr<benlib::cell>> grid2D_;
+  benlib::multi_array<std::unique_ptr<benlib::cell>> grid2D;
 
-  inline static std::map<uint64_t, cell*> map_type;
+  inline static std::map<uint64_t, benlib::cell*> map_type;
 };
 }  // namespace benlib
 #endif  // BENLIB_GOL_HPP_
