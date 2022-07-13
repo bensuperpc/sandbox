@@ -8,8 +8,12 @@
 #include <string>  // std::string
 #include <vector>  // std::vector
 
+#include "air.hpp"
+#include "fire.hpp"
+#include "sand.hpp"
 #include "vector/multi_array.hpp"
 #include "vector/vector.hpp"
+#include "water.hpp"
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 #  if __has_include("omp.h")
@@ -32,14 +36,16 @@ public:
   Gol();
   // Constructor.
   Gol(const uint64_t width, const uint64_t height);
+  /*
   // Constructor.
-  Gol(uint8_t** _grid, const uint64_t width, const uint64_t height);
+  Gol(benlib::cell** _grid, const uint64_t width, const uint64_t height);
   // Constructor.
-  Gol(const std::vector<std::vector<uint8_t>>& _grid);
+  Gol(const std::vector<std::vector<benlib::cell>>& _grid);
   // Constructor.
-  Gol(const std::vector<uint8_t>& _grid1D,
+  Gol(const std::vector<benlib::cell>& _grid1D,
       const uint64_t width,
       const uint64_t height);
+  */
   // Destructor.
   ~Gol();
   // Get the width of the game of life.
@@ -57,29 +63,28 @@ public:
   // Set the number of generations.
   void SetGenerations(const uint64_t generations);
   // Set the cell at the given coordinates to be alive.
-  void SetCell(const uint64_t x, const uint64_t y, const uint8_t alive);
+  void SetCell(const uint64_t x, const uint64_t y, const benlib::cell& alive);
+  void SetCell(const uint64_t x, const uint64_t y, const uint64_t id);
   // Set row
-  void SetRow(const uint64_t row, const std::vector<uint8_t>& rowData);
+  void SetRow(const uint64_t row, const std::vector<benlib::cell>& rowData);
   // Get the cell at the given coordinates.
-  uint8_t GetCell(const uint64_t x, const uint64_t y);
+  benlib::cell GetCell(const uint64_t x, const uint64_t y);
   // Get the row at the given coordinates.
-  std::vector<uint8_t> GetRow(const uint64_t y);
+  std::vector<benlib::cell> GetRow(const uint64_t y);
   // Get grid.
-  std::vector<uint8_t> GetGrid();
+  std::vector<benlib::cell> GetGrid();
   // Set grid.
-  void SetGrid(const std::vector<uint8_t>& _grid);
+  void SetGrid(const std::vector<benlib::cell>& _grid);
 
-  void Circle(const uint64_t x,
-              const uint64_t y,
-              const uint64_t r,
-              const uint8_t alive);
+  void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const benlib::cell& alive);
+  void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id);
   // Get neighbors.
-  uint64_t GetNeighborsCount(const std::vector<uint8_t>& _grid,
+  uint64_t GetNeighborsCount(const std::vector<benlib::cell>& _grid,
                              const uint64_t width,
                              const uint64_t height,
                              const uint64_t x,
                              const uint64_t y,
-                             const uint8_t value);
+                             const benlib::cell value);
   // Update the game of life.
   void Update();
 
@@ -93,8 +98,8 @@ public:
 
   // Randomly populate the game of life.
   void RandomFill();
-  // Populate the game of life with value in uint8_tean
-  void Fill(const uint8_t value);
+  // Populate the game of life with value in benlib::cellean
+  void Fill(const benlib::cell& value);
   // Reset the game of life.
   void Reset();
 
@@ -105,18 +110,19 @@ public:
   // Overload operator!= to compare a game of life.
   bool operator!=(const Gol& gol) const;
   // Overload operator(x, y) to get the cell at the given coordinates.
-  uint8_t operator()(const uint64_t x, const uint64_t y);
+  benlib::cell operator()(const uint64_t x, const uint64_t y);
 
   // Save the game of life to a file.
-  void Serialize(const std::string& filename);
+  // void Serialize(const std::string& filename);
   // Load the game of life from a file.
-  void Deserialize(const std::string& filename);
+  // void Deserialize(const std::string& filename);
 
 protected:
   // The number of generations.
   uint64_t generations = 0;
   // The game of life grid.
-  benlib::multi_array<uint8_t> grid2D;
+  benlib::multi_array<benlib::cell> grid2D;
+  inline static std::map<uint64_t, cell*> map_type;
 };
 }  // namespace benlib
 #endif  // BENLIB_GOL_HPP_

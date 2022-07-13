@@ -24,8 +24,7 @@ static void multi_array_set_value_uint32_t_2D(benchmark::State& state)
   }
 
   state.SetItemsProcessed(state.iterations() * width * height);
-  state.SetBytesProcessed(state.iterations() * width * height
-                          * sizeof(uint32_t));
+  state.SetBytesProcessed(state.iterations() * width * height * sizeof(uint32_t));
 }
 BENCHMARK(multi_array_set_value_uint32_t_2D)
     ->Name("multi_array_set_value_uint32_t_2D")

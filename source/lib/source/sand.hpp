@@ -5,11 +5,15 @@
 
 namespace benlib
 {
-class sand : public cell
+class sand : public virtual cell
 {
 public:
   sand();
   ~sand();
+
+  cell *create() override;
+
+  void class_name() override;
 };
 
 }  // namespace benlib

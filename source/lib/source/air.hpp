@@ -1,20 +1,18 @@
-#ifndef BENLIB_WATER_HPP_
-#define BENLIB_WATER_HPP_
+#ifndef BENLIB_AIR_HPP_
+#define BENLIB_AIR_HPP_
 
 #include "cell.hpp"
 
 namespace benlib
 {
-class water : public virtual cell
+class air : public virtual cell
 {
 public:
-  water();
-  ~water();
-
+  air();
+  ~air();
   cell *create() override;
   void class_name() override;
   
 };
-
 }  // namespace benlib
 #endif
