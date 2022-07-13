@@ -12,7 +12,7 @@ std::unique_ptr<benlib::cell> benlib::fire::create()
   return std::move(std::make_unique<fire>());
 }
 
-void benlib::fire::class_name()
+std::string benlib::fire::class_name() const
 {
-  std::cout << "fire" << std::endl;
+  return "fire";
 }

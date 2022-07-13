@@ -114,23 +114,20 @@ void benlib::Gol::SetGrid(const std::vector<benlib::cell>& _grid)
 }
 
 */
-void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const benlib::cell& cell)
+void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, benlib::cell* cell)
 {
-  // grid2D.set_value(x * GetHeight() + y, std::move(cell));
+  grid2D.set_value(x * GetHeight() + y, std::move(std::unique_ptr<benlib::cell>(cell)));
 }
 
 void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const uint64_t id_map)
 {
-  // auto cell = std::make_unique<benlib::air>();
-  // grid2D.set_value(x * GetHeight() + y, std::move(cell));
-
   auto it = map_type.find(id_map);
 
   if (it != map_type.end()) {
     auto cell = it->second->create();
     grid2D.set_value(x * GetHeight() + y, std::move(cell));
     auto _cell = GetCell(x, y);
-    // _cell->class_name();
+    // std::cout << "Class: " << _cell->class_name();
   } else {
     grid2D.set_value(x * GetHeight() + y, std::move(std::make_unique<benlib::air>()));
   }
@@ -262,17 +259,6 @@ benlib::Gol& benlib::Gol::operator=(const benlib::Gol& other)
   //     return *this;
   // grid2D = other.grid2D;
   // return *this;
-}
-
-void benlib::Gol::Circle(const uint64_t x, const uint64_t y, const uint64_t r, const benlib::cell& alive)
-{
-  for (uint64_t i = 0; i < GetWidth(); i++) {
-    for (uint64_t j = 0; j < GetHeight(); j++) {
-      if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
-        SetCell(i, j, alive);
-      }
-    }
-  }
 }
 
 void benlib::Gol::Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id)

@@ -19,7 +19,7 @@ std::unique_ptr<benlib::cell> benlib::cell::create()
   return std::move(std::make_unique<cell>());
 }
 
-void benlib::cell::class_name()
+std::string benlib::cell::class_name() const
 {
-  std::cout << "cell" << std::endl;
+  return "cell";
 }

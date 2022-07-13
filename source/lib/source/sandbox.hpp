@@ -59,7 +59,7 @@ public:
   // Set the number of generations.
   void SetGenerations(const uint64_t generations);
   // Set the cell at the given coordinates to be alive.
-  void SetCell(const uint64_t x, const uint64_t y, const benlib::cell& alive);
+  void SetCell(const uint64_t x, const uint64_t y, benlib::cell* alive);
   void SetCell(const uint64_t x, const uint64_t y, const uint64_t id);
   // Set row
   void SetRow(const uint64_t row, const std::vector<benlib::cell>& rowData);
@@ -72,7 +72,6 @@ public:
   // Set grid.
   void SetGrid(const std::vector<benlib::cell>& _grid);
 
-  void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const benlib::cell& alive);
   void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id);
   // Get neighbors.
   uint64_t GetNeighborsCount(const std::vector<benlib::cell>& _grid,

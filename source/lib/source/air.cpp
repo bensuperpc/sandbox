@@ -12,7 +12,7 @@ std::unique_ptr<benlib::cell> benlib::air::create()
   return std::move(std::make_unique<air>());
 }
 
-void benlib::air::class_name()
+std::string benlib::air::class_name() const
 {
-  std::cout << "air" << std::endl;
+  return "air";
 }

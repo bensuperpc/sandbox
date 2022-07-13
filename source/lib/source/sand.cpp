@@ -13,7 +13,7 @@ std::unique_ptr<benlib::cell> benlib::sand::create()
   return std::move(std::make_unique<sand>());
 }
 
-void benlib::sand::class_name()
+std::string benlib::sand::class_name() const
 {
-  std::cout << "sand" << std::endl;
+  return "sand";
 }

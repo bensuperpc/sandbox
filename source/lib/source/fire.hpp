@@ -13,7 +13,7 @@ public:
 
   std::unique_ptr<cell> create() override;
 
-  void class_name() override;
+  std::string class_name() const override;
 };
 }  // namespace benlib
 #endif

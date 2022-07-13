@@ -13,7 +13,7 @@ std::unique_ptr<benlib::cell> benlib::water::create()
   return std::move(std::make_unique<water>());
 }
 
-void benlib::water::class_name()
+std::string benlib::water::class_name() const
 {
-  std::cout << "water" << std::endl;
+  return "water";
 }

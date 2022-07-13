@@ -20,7 +20,7 @@ public:
   // virtual void update() = 0;
   virtual std::unique_ptr<cell> create();
 
-  virtual void class_name();
+  virtual std::string class_name() const;
 
 protected:
   bool gravity = false;
