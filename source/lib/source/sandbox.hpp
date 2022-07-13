@@ -122,6 +122,8 @@ protected:
   uint64_t generations = 0;
   // The game of life grid.
   benlib::multi_array<benlib::cell> grid2D;
+  benlib::multi_array<std::unique_ptr<benlib::cell>> grid2D_;
+
   inline static std::map<uint64_t, cell*> map_type;
 };
 }  // namespace benlib

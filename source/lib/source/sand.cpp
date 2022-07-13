@@ -8,9 +8,9 @@ benlib::sand::sand()
 
 benlib::sand::~sand() {}
 
-benlib::cell * benlib::sand::create()
+std::unique_ptr<benlib::cell> benlib::sand::create()
 {
-  return new sand();
+  return std::make_unique<sand>();
 }
 
 void benlib::sand::class_name()

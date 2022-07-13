@@ -10,7 +10,8 @@ class air : public virtual cell
 public:
   air();
   ~air();
-  cell *create() override;
+  
+  std::unique_ptr<cell> create() override;
   void class_name() override;
   
 };

@@ -139,6 +139,7 @@ void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const benlib::cell
 
 void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const uint64_t id_map)
 {
+  /*
   auto it = map_type.find(id_map);
   
   if (it != map_type.end()) {
@@ -149,6 +150,7 @@ void benlib::Gol::SetCell(const uint64_t x, const uint64_t y, const uint64_t id_
   } else {
     grid2D.set_value(x * GetHeight() + y, benlib::air());
   }
+  */
 }
 
 benlib::cell benlib::Gol::GetCell(const uint64_t x, const uint64_t y)

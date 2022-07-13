@@ -7,9 +7,9 @@ benlib::fire::fire()
 
 benlib::fire::~fire() {}
 
-benlib::cell * benlib::fire::create()
+std::unique_ptr<benlib::cell> benlib::fire::create()
 {
-  return new fire();
+  return std::make_unique<fire>();
 }
 
 void benlib::fire::class_name()

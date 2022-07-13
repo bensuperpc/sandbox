@@ -8,10 +8,9 @@ benlib::air::air()
 
 benlib::air::~air() {}
 
-benlib::cell * benlib::air::create()
+std::unique_ptr<benlib::cell> benlib::air::create()
 {
-  std::cout << "air" << std::endl;
-  return new air();
+  return std::make_unique<air>();
 }
 
 void benlib::air::class_name()

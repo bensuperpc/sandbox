@@ -14,9 +14,9 @@ void benlib::cell::set_id(uint64_t _id)
   this->id = _id;
 }
 
-benlib::cell * benlib::cell::create()
+std::unique_ptr<benlib::cell> benlib::cell::create()
 {
-  return new cell();
+  return std::make_unique<cell>();
 }
 
 void benlib::cell::class_name()

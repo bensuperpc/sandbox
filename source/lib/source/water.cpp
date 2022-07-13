@@ -8,9 +8,9 @@ benlib::water::water()
 
 benlib::water::~water() {}
 
-benlib::cell * benlib::water::create()
+std::unique_ptr<benlib::cell> benlib::water::create()
 {
-  return new water();
+  return std::make_unique<water>();
 }
 
 void benlib::water::class_name()

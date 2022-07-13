@@ -11,7 +11,7 @@ public:
   fire();
   ~fire();
 
-  cell *create() override;
+  std::unique_ptr<cell> create() override;
 
   void class_name() override;
 };
