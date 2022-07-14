@@ -12,6 +12,8 @@ benlib::Gol::Gol(const uint64_t width, const uint64_t height)
     data->emplace_back(std::make_unique<benlib::air>());
   }
 
+  data->reserve(GetWidth() * GetHeight());
+
   // Get get_id() from cell
   // std::cout << data->at(0).get()->get_id() << std::endl;
 
@@ -203,13 +205,12 @@ void benlib::Gol::Update()
 {
   generations++;
   // clone the grid
-  benlib::multi_array<std::unique_ptr<benlib::cell>> new_grid;
 
+  new_grid.clear();
   std::vector<uint64_t> v = {GetWidth(), GetHeight()};
   new_grid.set_dim(v);
 
   auto data = new_grid.data();
-  data->reserve(GetWidth() * GetHeight());
 
   for (uint64_t i = 0; i < GetWidth(); i++) {
     for (uint64_t j = 0; j < GetHeight(); j++) {

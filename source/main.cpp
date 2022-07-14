@@ -1,5 +1,6 @@
 #include <array>  // std::array
 #include <iostream>  // std::cout, std::endl
+#include <memory>  // std::unique_ptr
 #include <vector>  // std::vector
 
 #include "raylib-cpp.hpp"
@@ -49,7 +50,7 @@ auto main() -> int
 
   raylib::Image gridImage(screenWidth, screenHeight, RAYWHITE);
 
-  Color* pixels;
+  Color* pixels = gridImage.LoadColors();
 
   raylib::Texture gridTexture(gridImage);
 
@@ -99,6 +100,7 @@ auto main() -> int
 
     if (IsKeyPressed(KEY_S)) {
       const std::string filename = "image.png";
+      auto img = raylib::Image(pixels, screenWidth, screenHeight);
       gridImage.FlipVertical();
       gridImage.Export(filename);
       gridImage.FlipVertical();
@@ -127,16 +129,13 @@ auto main() -> int
     // Update image
     for (uint64_t x = 0; x < screenWidth; x++) {
       for (uint64_t y = 0; y < screenHeight; y++) {
-        gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), colors[(*sandbox.GetCell(x, y)).get_id()]);
+        pixels[static_cast<uint64_t>(x + y * screenWidth)] = colors[(*sandbox.GetCell(x, y)).get_id()];
+        // gridImage.DrawPixel(static_cast<int>(x), static_cast<int>(y), colors[(*sandbox.GetCell(x, y)).get_id()]);
       }
     }
 
-    // Get pixels from image
-    pixels = gridImage.LoadColors();
-
     // Update texture
     gridTexture.Update(pixels);
-    gridImage.UnloadColors(pixels);
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -172,6 +171,7 @@ auto main() -> int
 
     EndDrawing();
   }
+  gridImage.UnloadColors(pixels);
 
   return 0;
 }
