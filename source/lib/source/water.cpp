@@ -3,17 +3,28 @@
 benlib::water::water()
 {
   gravity = true;
-  id = 1;
 }
 
 benlib::water::~water() {}
 
 std::unique_ptr<benlib::cell> benlib::water::create()
 {
-  return std::move(std::make_unique<water>());
+  return std::move(std::make_unique<benlib::water>());
+}
+
+std::unique_ptr<benlib::cell> benlib::water::clone()
+{
+  auto obj = std::make_unique<benlib::water>();
+  obj->gravity = this->gravity;
+  return std::move(obj);
 }
 
 std::string benlib::water::class_name() const
 {
   return "water";
+}
+
+const uint64_t benlib::water::get_id() const
+{
+  return 1;
 }

@@ -4,7 +4,7 @@ include(FetchContent)
 
 FetchContent_Declare(bs-thread-pool
     GIT_REPOSITORY https://github.com/bshoshany/thread-pool.git
-    GIT_TAG 9d43f5d05d11835ec027ae0679f8cd8a1a87e9cb # 2022-05-31
+    GIT_TAG cca27608ee29fa5212fc633caf096d5a2a169b1e # 2022-07-14
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""

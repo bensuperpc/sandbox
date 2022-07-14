@@ -41,6 +41,9 @@ set(SRCS
     source/water.cpp
     source/fire.cpp
     source/air.cpp
+    source/steam.cpp
+    source/glass.cpp
+    source/plant.cpp
 	)
 	
 set(HEADERS
@@ -50,6 +53,9 @@ set(HEADERS
     source/water.hpp
     source/fire.hpp
     source/air.hpp
+    source/steam.hpp
+    source/glass.hpp
+    source/plant.hpp
     )
 
 add_library(sandbox_lib ${SRCS} ${HEADERS})

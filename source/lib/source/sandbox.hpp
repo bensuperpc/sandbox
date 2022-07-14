@@ -10,7 +10,10 @@
 
 #include "air.hpp"
 #include "fire.hpp"
+#include "glass.hpp"
+#include "plant.hpp"
 #include "sand.hpp"
+#include "steam.hpp"
 #include "vector/multi_array.hpp"
 #include "vector/vector.hpp"
 #include "water.hpp"
@@ -68,9 +71,9 @@ public:
   // Get the row at the given coordinates.
   std::vector<benlib::cell> GetRow(const uint64_t y);
   // Get grid.
-  std::vector<benlib::cell> GetGrid();
+  benlib::multi_array<std::unique_ptr<benlib::cell>>* GetGrid();
   // Set grid.
-  void SetGrid(const std::vector<benlib::cell>& _grid);
+  void SetGrid(std::vector<benlib::cell*>* _grid);
 
   void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id);
   // Get neighbors.
@@ -94,7 +97,7 @@ public:
   // Randomly populate the game of life.
   void RandomFill();
   // Populate the game of life with value in benlib::cellean
-  void Fill(const benlib::cell& value);
+  void Fill(const uint64_t value);
   // Reset the game of life.
   void Reset();
 
@@ -105,7 +108,7 @@ public:
   // Overload operator!= to compare a game of life.
   bool operator!=(const Gol& gol) const;
   // Overload operator(x, y) to get the cell at the given coordinates.
-  benlib::cell operator()(const uint64_t x, const uint64_t y);
+  benlib::cell* operator()(const uint64_t x, const uint64_t y);
 
   // Save the game of life to a file.
   // void Serialize(const std::string& filename);

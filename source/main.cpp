@@ -23,7 +23,7 @@ auto main() -> int
 {
   const int screenWidth = 1920;
   const int screenHeight = 1080;
-  const uint32_t targetFPS = 120;
+  const uint32_t targetFPS = 60;
   const uint32_t gridUpdatePerSecond = 10;
 
   // Colours to choose from
@@ -121,9 +121,9 @@ auto main() -> int
       brushSize = 2;
     if (brushSize > 70)
       brushSize = 70;
-#if defined(_OPENMP)
-#  pragma omp parallel for collapse(2) schedule(auto)
-#endif
+    //#if defined(_OPENMP)
+    //#  pragma omp parallel for collapse(2) schedule(auto)
+    //#endif
     // Update image
     for (uint64_t x = 0; x < screenWidth; x++) {
       for (uint64_t y = 0; y < screenHeight; y++) {
