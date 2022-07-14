@@ -23,7 +23,7 @@ auto main() -> int
 {
   const int screenWidth = 1920;
   const int screenHeight = 1080;
-  const uint32_t targetFPS = 60;
+  const uint32_t targetFPS = 480;
   const uint32_t gridUpdatePerSecond = 10;
 
   // Colours to choose from

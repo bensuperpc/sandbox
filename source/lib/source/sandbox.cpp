@@ -7,6 +7,7 @@ benlib::Gol::Gol(const uint64_t width, const uint64_t height)
   std::vector<uint64_t> v = {width, height};
   this->grid2D.set_dim(v);
   auto data = this->grid2D.data();
+  data->reserve(GetWidth() * GetHeight());
   for (uint64_t i = 0; i < width * height; i++) {
     data->emplace_back(std::make_unique<benlib::air>());
   }
@@ -201,6 +202,21 @@ uint64_t benlib::Gol::GetNeighborsCount(const std::vector<benlib::cell>& _grid,
 void benlib::Gol::Update()
 {
   generations++;
+  // clone the grid
+  benlib::multi_array<std::unique_ptr<benlib::cell>> new_grid;
+
+  std::vector<uint64_t> v = {GetWidth(), GetHeight()};
+  new_grid.set_dim(v);
+
+  auto data = new_grid.data();
+  data->reserve(GetWidth() * GetHeight());
+
+  for (uint64_t i = 0; i < GetWidth(); i++) {
+    for (uint64_t j = 0; j < GetHeight(); j++) {
+      data->emplace_back(this->grid2D.data()->at(i * GetHeight() + j)->clone());
+    }
+  }
+
 #if defined(_OPENMP)
 #  pragma omp parallel for collapse(2) schedule(auto)
 #endif
@@ -222,11 +238,17 @@ void benlib::Gol::Update()
           }
 
           // Update ptr
-          const auto neighbor = GetCell(x + i, y + j);
+          // const auto neighbor = GetCell(x + i, y + j);
+          const auto neighbor = new_grid.data()->at((x + i) * GetHeight() + y + j).get();
           const auto cell = GetCell(x, y);
 
           // If same class, do nothing
-          if (neighbor->get_id() == cell->get_id()) {
+          if (cell->get_id() == neighbor->get_id()) {
+            continue;
+          }
+
+          // If is air, do nothing
+          if (cell->get_id() == 0) {
             continue;
           }
 
@@ -242,15 +264,15 @@ void benlib::Gol::Update()
             continue;
           }
 
-          // If plant + fire -> fire
-          if (cell->get_id() == 6 && neighbor->get_id() == 2) {
-            SetCell(x, y, new benlib::fire());
+          // If water + plant -> plant
+          if (cell->get_id() == 1 && neighbor->get_id() == 6) {
+            SetCell(x, y, new benlib::plant());
             continue;
           }
 
-          // If plant + water -> plant
-          if (cell->get_id() == 6 && neighbor->get_id() == 1) {
-            SetCell(x, y, new benlib::plant());
+          // If plant + fire -> fire
+          if (cell->get_id() == 6 && neighbor->get_id() == 2) {
+            SetCell(x, y, new benlib::fire());
             continue;
           }
         }
