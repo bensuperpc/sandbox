@@ -33,24 +33,24 @@
 namespace benlib
 {
 // A class for representing a game of life.
-class Gol
+class sendbox
 {
 public:
-  Gol();
+  sendbox();
   // Constructor.
-  Gol(const uint64_t width, const uint64_t height);
+  sendbox(const uint64_t width, const uint64_t height);
   /*
   // Constructor.
-  Gol(benlib::cell** _grid, const uint64_t width, const uint64_t height);
+  sendbox(benlib::cell** _grid, const uint64_t width, const uint64_t height);
   // Constructor.
-  Gol(const std::vector<std::vector<benlib::cell>>& _grid);
+  sendbox(const std::vector<std::vector<benlib::cell>>& _grid);
   // Constructor.
-  Gol(const std::vector<benlib::cell>& _grid1D,
+  sendbox(const std::vector<benlib::cell>& _grid1D,
       const uint64_t width,
       const uint64_t height);
   */
   // Destructor.
-  ~Gol();
+  ~sendbox();
   // Get the width of the game of life.
   uint64_t GetWidth();
   // Get the height of the game of life.
@@ -77,12 +77,14 @@ public:
 
   void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id);
   // Get neighbors.
+  /*
   uint64_t GetNeighborsCount(const std::vector<benlib::cell>& _grid,
                              const uint64_t width,
                              const uint64_t height,
                              const uint64_t x,
                              const uint64_t y,
                              const benlib::cell value);
+                             */
   // Update the game of life.
   void Update();
 
@@ -102,11 +104,11 @@ public:
   void Reset();
 
   // Overload operator== to compare a game of life.
-  bool operator==(const Gol& gol) const;
+  bool operator==(const sendbox& gol) const;
   // Overload operator= to copy a game of life.
-  Gol& operator=(const Gol& gol);
+  sendbox& operator=(const sendbox& gol);
   // Overload operator!= to compare a game of life.
-  bool operator!=(const Gol& gol) const;
+  bool operator!=(const sendbox& gol) const;
   // Overload operator(x, y) to get the cell at the given coordinates.
   benlib::cell* operator()(const uint64_t x, const uint64_t y);
 

@@ -13,18 +13,18 @@ namespace benlib
 class cell
 {
 public:
-  cell();
-  ~cell();
+  // virtual cell();
+  virtual ~cell();
   // virtual void update() = 0;
-  virtual std::unique_ptr<cell> create();
-  virtual std::unique_ptr<cell> clone();
+  virtual std::unique_ptr<cell> create() = 0;
+  virtual std::unique_ptr<cell> clone() = 0;
 
-  virtual std::string class_name() const;
-  virtual const uint64_t get_id() const;
+  virtual std::string class_name() const = 0;
+  virtual uint64_t get_id() const = 0;
 
 protected:
-  bool gravity = false;
-  bool border = false;
+  bool gravity;
+  bool border = 0;
 };
 
 }  // namespace benlib

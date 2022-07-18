@@ -11,11 +11,11 @@ public:
   air();
   ~air();
 
-  std::unique_ptr<cell> create() override;
-  std::unique_ptr<cell> clone() override;
+  std::unique_ptr<cell> create();
+  std::unique_ptr<cell> clone();
 
-  std::string class_name() const override;
-  const uint64_t get_id() const override;
+  std::string class_name() const;
+  uint64_t get_id() const;
 };
 }  // namespace benlib
 #endif

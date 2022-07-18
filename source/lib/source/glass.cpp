@@ -6,7 +6,7 @@ benlib::glass::~glass() {}
 
 std::unique_ptr<benlib::cell> benlib::glass::create()
 {
-  return std::move(std::make_unique<benlib::glass>());
+  return std::make_unique<benlib::glass>();
 }
 
 std::unique_ptr<benlib::cell> benlib::glass::clone()
@@ -21,7 +21,7 @@ std::string benlib::glass::class_name() const
   return "glass";
 }
 
-const uint64_t benlib::glass::get_id() const
+uint64_t benlib::glass::get_id() const
 {
   return 5;
 }

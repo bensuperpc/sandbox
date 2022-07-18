@@ -58,7 +58,7 @@ auto main() -> int
 
   uint64_t selectedColor = 1;
   uint64_t colorMouseHover = -1;
-  auto sandbox = benlib::Gol(screenWidth, screenHeight);
+  auto sandbox = benlib::sendbox(screenWidth, screenHeight);
 
   uint64_t framesCounter = 0;
 

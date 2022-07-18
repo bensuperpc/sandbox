@@ -6,7 +6,7 @@ benlib::steam::~steam() {}
 
 std::unique_ptr<benlib::cell> benlib::steam::create()
 {
-  return std::move(std::make_unique<benlib::steam>());
+  return std::make_unique<benlib::steam>();
 }
 
 std::unique_ptr<benlib::cell> benlib::steam::clone()
@@ -21,7 +21,7 @@ std::string benlib::steam::class_name() const
   return "steam";
 }
 
-const uint64_t benlib::steam::get_id() const
+uint64_t benlib::steam::get_id() const
 {
   return 4;
 }

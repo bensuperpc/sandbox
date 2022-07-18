@@ -6,7 +6,7 @@ benlib::fire::~fire() {}
 
 std::unique_ptr<benlib::cell> benlib::fire::create()
 {
-  return std::move(std::make_unique<benlib::fire>());
+  return std::make_unique<benlib::fire>();
 }
 
 std::unique_ptr<benlib::cell> benlib::fire::clone()
@@ -21,7 +21,7 @@ std::string benlib::fire::class_name() const
   return "fire";
 }
 
-const uint64_t benlib::fire::get_id() const
+uint64_t benlib::fire::get_id() const
 {
   return 2;
 }

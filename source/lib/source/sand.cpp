@@ -9,7 +9,7 @@ benlib::sand::~sand() {}
 
 std::unique_ptr<benlib::cell> benlib::sand::create()
 {
-  return std::move(std::make_unique<benlib::sand>());
+  return std::make_unique<benlib::sand>();
 }
 
 std::unique_ptr<benlib::cell> benlib::sand::clone()
@@ -24,7 +24,7 @@ std::string benlib::sand::class_name() const
   return "sand";
 }
 
-const uint64_t benlib::sand::get_id() const
+uint64_t benlib::sand::get_id() const
 {
   return 3;
 }
