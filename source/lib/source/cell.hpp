@@ -18,6 +18,7 @@ public:
   // virtual void update() = 0;
   virtual std::unique_ptr<cell> create() = 0;
   virtual std::unique_ptr<cell> clone() = 0;
+  // virtual std::unique_ptr<cell> update(const uint64_t x, const uint64_t y) = 0;
 
   virtual std::string class_name() const = 0;
   virtual uint64_t get_id() const = 0;

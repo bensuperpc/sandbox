@@ -142,6 +142,10 @@ lint:
 format:
 	time find . -regex '.*\.\(cpp\|cxx\|hpp\|hxx\|c\|h\|cu\|cuh\|cuhpp\|tpp\)' -not -path '*/build/*' | parallel clang-format -style=file -i {} \;
 
+.PHONY: cloc
+cloc:
+	cloc --exclude-dir=$(shell tr '\n' ',' < .clocignore) .
+
 .PHONY: update
 update:
 	git pull --recurse-submodules --all --progress

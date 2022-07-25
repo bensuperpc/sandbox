@@ -21,7 +21,7 @@ std::string benlib::air::class_name() const
   return "air";
 }
 
-uint64_t benlib::air::get_id() const
+constexpr uint64_t benlib::air::get_id() const
 {
   return 0;
 }

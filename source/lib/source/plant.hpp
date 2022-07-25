@@ -15,7 +15,7 @@ public:
   std::unique_ptr<cell> clone();
 
   std::string class_name() const;
-  uint64_t get_id() const;
+  constexpr uint64_t get_id() const;
 };
 }  // namespace benlib
 #endif

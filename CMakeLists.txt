@@ -74,7 +74,8 @@ target_compile_features(sandbox_exe PRIVATE cxx_std_20)
 
 target_link_libraries(sandbox_exe PRIVATE sandbox_lib)
 
-target_link_libraries(sandbox_exe PRIVATE vector::vector raylib raylib_cpp)
+#target_link_libraries(sandbox_exe PRIVATE vector::vector)
+target_link_libraries(sandbox_exe PRIVATE raylib raylib_cpp)
 
 # ---- Install rules ----
 

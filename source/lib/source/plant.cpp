@@ -21,7 +21,7 @@ std::string benlib::plant::class_name() const
   return "plant";
 }
 
-uint64_t benlib::plant::get_id() const
+constexpr uint64_t benlib::plant::get_id() const
 {
   return 6;
 }

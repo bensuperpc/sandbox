@@ -24,7 +24,7 @@ std::string benlib::sand::class_name() const
   return "sand";
 }
 
-uint64_t benlib::sand::get_id() const
+constexpr uint64_t benlib::sand::get_id() const
 {
   return 3;
 }

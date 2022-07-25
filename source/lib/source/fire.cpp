@@ -21,7 +21,7 @@ std::string benlib::fire::class_name() const
   return "fire";
 }
 
-uint64_t benlib::fire::get_id() const
+constexpr uint64_t benlib::fire::get_id() const
 {
   return 2;
 }

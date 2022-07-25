@@ -24,7 +24,7 @@ std::string benlib::water::class_name() const
   return "water";
 }
 
-uint64_t benlib::water::get_id() const
+constexpr uint64_t benlib::water::get_id() const
 {
   return 1;
 }

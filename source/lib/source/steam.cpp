@@ -21,7 +21,7 @@ std::string benlib::steam::class_name() const
   return "steam";
 }
 
-uint64_t benlib::steam::get_id() const
+constexpr uint64_t benlib::steam::get_id() const
 {
   return 4;
 }

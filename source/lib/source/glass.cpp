@@ -21,7 +21,7 @@ std::string benlib::glass::class_name() const
   return "glass";
 }
 
-uint64_t benlib::glass::get_id() const
+constexpr uint64_t benlib::glass::get_id() const
 {
   return 5;
 }

@@ -14,8 +14,6 @@
 #include "plant.hpp"
 #include "sand.hpp"
 #include "steam.hpp"
-#include "vector/multi_array.hpp"
-#include "vector/vector.hpp"
 #include "water.hpp"
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
@@ -71,11 +69,12 @@ public:
   // Get the row at the given coordinates.
   std::vector<benlib::cell> GetRow(const uint64_t y);
   // Get grid.
-  benlib::multi_array<std::unique_ptr<benlib::cell>>* GetGrid();
+  std::vector<std::unique_ptr<benlib::cell>>* GetGrid();
   // Set grid.
   void SetGrid(std::vector<benlib::cell*>* _grid);
 
   void Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id);
+  void Rectangle(const uint64_t x, const uint64_t y, const uint64_t w, const uint64_t h, const uint64_t id);
   // Get neighbors.
   /*
   uint64_t GetNeighborsCount(const std::vector<benlib::cell>& _grid,
@@ -121,8 +120,12 @@ protected:
   // The number of generations.
   uint64_t generations = 0;
   // The game of life grid.
-  benlib::multi_array<std::unique_ptr<benlib::cell>> grid2D;
-  benlib::multi_array<std::unique_ptr<benlib::cell>> new_grid;
+
+  std::vector<std::unique_ptr<benlib::cell>> grid;
+  std::vector<std::unique_ptr<benlib::cell>> gridB;
+
+  uint64_t width = 0;
+  uint64_t height = 0;
 
   inline static std::map<uint64_t, benlib::cell*> map_type;
 };
