@@ -7,5 +7,7 @@
 
 TEST(sandbox, basic1) {
     auto sandbox = benlib::sendbox(1024, 1024);
-    //EXPECT_EQ("A", static_cast<std::string>(tmp1.data()));
+    sandbox.Update();
+
+    EXPECT_EQ(1, sandbox.GetGenerations());
 }
