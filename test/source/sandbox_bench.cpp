@@ -1,32 +1,26 @@
-#include <cstdint>  // uint32_t, uint64_t
-#include <random>  // std::mt19937
-#include <vector>  // std::vector
+#include <array>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include <benchmark/benchmark.h>
 
-#include "vector/multi_array.hpp"  // benlib::multi_array
-#include "vector/utils.hpp"  // _KB, _MB, _GB, _TB
+#include "sandbox.hpp"
 
-static void multi_array_set_value_uint32_t_2D(benchmark::State& state)
-{
-  const auto width = static_cast<uint64_t>(state.range(0));
-  const auto height = static_cast<uint64_t>(state.range(0));
-  std::vector<uint64_t> v = {width, height};
-  auto grid = benlib::multi_array<uint32_t>(v);
-  grid.fill(0);
-  benchmark::DoNotOptimize(grid);
+static void sandbox_bench(benchmark::State &state) {
+    // Code inside this loop is measured repeatedly
+    auto range = state.range(0);
+    auto sandbox = benlib::sendbox(range, range);
 
-  for (auto _ : state) {
-    for (uint64_t i = 0; i < width * height; ++i) {
-      grid.set_value(i, 42);
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(sandbox);
+        benchmark::ClobberMemory();
     }
-    benchmark::ClobberMemory();
-  }
-
-  state.SetItemsProcessed(state.iterations() * width * height);
-  state.SetBytesProcessed(state.iterations() * width * height * sizeof(uint32_t));
+    state.SetItemsProcessed(state.iterations());
+    state.SetBytesProcessed(state.iterations() * sizeof(uint64_t));
 }
-BENCHMARK(multi_array_set_value_uint32_t_2D)
-    ->Name("multi_array_set_value_uint32_t_2D")
-    ->RangeMultiplier(8)
-    ->Range(8, 4_KB);
+
+BENCHMARK(sandbox_bench)->Name("sandbox_bench")->RangeMultiplier(10)->Range(10, 1000);
+
+// Run the benchmark
+// BENCHMARK_MAIN();

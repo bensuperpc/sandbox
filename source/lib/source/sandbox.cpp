@@ -2,28 +2,13 @@
 
 benlib::sendbox::sendbox() {}
 
-benlib::sendbox::sendbox(const uint64_t width, const uint64_t height)
+benlib::sendbox::sendbox(const uint64_t _width, const uint64_t _height)
 {
-  this->width = width;
-  this->height = height;
+  this->width = _width;
+  this->height = _height;
 
-  grid.reserve(GetWidth() * GetHeight());
-  for (uint64_t i = 0; i < width * height; i++) {
-    grid.emplace_back(std::make_unique<benlib::air>());
-  }
-
-  grid.reserve(GetWidth() * GetHeight());
-
-  // Get get_id() from cell
-  // std::cout << data->at(0).get()->get_id() << std::endl;
-
-  map_type[benlib::air().get_id()] = new benlib::air();
-  map_type[benlib::water().get_id()] = new benlib::water();
-  map_type[benlib::fire().get_id()] = new benlib::fire();
-  map_type[benlib::sand().get_id()] = new benlib::sand();
-  map_type[benlib::steam().get_id()] = new benlib::steam();
-  map_type[benlib::glass().get_id()] = new benlib::glass();
-  map_type[benlib::plant().get_id()] = new benlib::plant();
+  grid.resize(GetWidth() * GetHeight());
+  std::fill(grid.begin(), grid.end(), Cell::air);
 }
 
 /*
@@ -63,12 +48,12 @@ benlib::sendbox::sendbox(const std::vector<std::vector<benlib::cell>>& _grid)
 
 benlib::sendbox::~sendbox() {}
 
-uint64_t benlib::sendbox::GetWidth()
+uint64_t benlib::sendbox::GetWidth() const noexcept
 {
   return this->width;
 }
 
-uint64_t benlib::sendbox::GetHeight()
+uint64_t benlib::sendbox::GetHeight() const noexcept
 {
   return this->height;
 }
@@ -83,19 +68,15 @@ void benlib::sendbox::Resize(const uint64_t width, const uint64_t height)
 
 void benlib::sendbox::Reset()
 {
-  grid.clear();
-  for (uint64_t i = 0; i < GetWidth() * GetHeight(); i++) {
-    auto cell = std::make_unique<benlib::air>();
-    grid.emplace_back(std::move(cell));
-  }
+  std::fill(grid.begin(), grid.end(), Cell::air);
 }
 
-uint64_t benlib::sendbox::GetCells()
+uint64_t benlib::sendbox::GetCells() const noexcept
 {
   return GetWidth() * GetHeight();
 }
 
-uint64_t benlib::sendbox::GetGenerations()
+uint64_t benlib::sendbox::GetGenerations() const noexcept
 {
   return generations;
 }
@@ -105,44 +86,22 @@ void benlib::sendbox::SetGenerations(const uint64_t _generations)
   this->generations = _generations;
 }
 
-std::vector<std::unique_ptr<benlib::cell>>* benlib::sendbox::GetGrid()
+void benlib::sendbox::SetCell(const uint64_t x, const uint64_t y, const Cell id)
 {
-  return &grid;
+  grid[x * GetHeight() + y] = id;
 }
 
-void benlib::sendbox::SetGrid(std::vector<benlib::cell*>* _grid) {}
-
-void benlib::sendbox::SetCell(const uint64_t x, const uint64_t y, benlib::cell* cell)
+Cell& benlib::sendbox::GetCell(const uint64_t x, const uint64_t y)
 {
-  grid[x * GetHeight() + y] = std::unique_ptr<benlib::cell>(cell);
-}
-
-void benlib::sendbox::SetCell(const uint64_t x, const uint64_t y, const uint64_t id_map)
-{
-  auto it = map_type.find(id_map);
-
-  if (it != map_type.end()) {
-    auto cell = it->second->create();
-    grid[x * GetHeight() + y] = std::move(cell);
-    // auto _cell = GetCell(x, y);
-    // std::cout << "Class: " << _cell->class_name() << std::endl;
-  } else {
-    grid[x * GetHeight() + y] = std::make_unique<benlib::air>();
-  }
-}
-
-benlib::cell* benlib::sendbox::GetCell(const uint64_t x, const uint64_t y)
-{
-  return grid[x * GetHeight() + y].get();
-  // data->at(x * GetHeight() + y).get();
-  //  return (*data)[x * GetHeight() + y].get();
+  return grid[x * GetHeight() + y];
 }
 
 void benlib::sendbox::Print()
 {
+  /*
   for (uint64_t x = 0; x < GetWidth(); x++) {
     for (uint64_t y = 0; y < GetHeight(); y++) {
-      std::cout << grid[x * GetHeight() + y]->get_id() << " ";
+      std::cout << grid[x * GetHeight() + y] << " ";
 
       if (y == GetHeight() - 1) {
         std::cout << "\n";
@@ -150,6 +109,7 @@ void benlib::sendbox::Print()
     }
   }
   std::cout << std::endl;
+  */
 }
 
 /*
@@ -193,17 +153,9 @@ uint64_t benlib::sendbox::GetNeighborsCount(const std::vector<benlib::cell>& _gr
 void benlib::sendbox::Update()
 {
   generations++;
+
   // clone the grid
-
-  gridB.clear();
-  gridB.reserve(GetWidth() * GetHeight());
-
-  for (uint64_t i = 0; i < GetWidth(); i++) {
-    for (uint64_t j = 0; j < GetHeight(); j++) {
-      // gridB.emplace_back(this->grid2D.data()->at(i * GetHeight() + j)->clone());
-      gridB.emplace_back(grid[i * GetHeight() + j]->clone());
-    }
-  }
+  gridB = grid;
 
 #if defined(_OPENMP)
 #  pragma omp parallel for collapse(2) schedule(auto)
@@ -225,43 +177,40 @@ void benlib::sendbox::Update()
             continue;
           }
 
-          // Update ptr
-          // const auto neighbor = GetCell(x + i, y + j);
-          // const auto neighbor = new_grid.data()->at((x + i) * GetHeight() + y + j).get();
-          const auto neighbor = gridB[(x + i) * GetHeight() + y + j].get();
-          const auto cell = GetCell(x, y);
+          const Cell& neighbor = gridB[(x + i) * GetHeight() + y + j];
+          Cell& cell = GetCell(x, y);
 
-          // If same class, do nothing
-          if (cell->get_id() == neighbor->get_id()) {
+          // If is air, do nothing
+          if (cell == Cell::air) {
             continue;
           }
 
-          // If is air, do nothing
-          if (cell->get_id() == 0) {
+          // If same class, do nothing
+          if (cell == neighbor) {
             continue;
           }
 
           // If water + fire -> steam
-          if (cell->get_id() == 1 && neighbor->get_id() == 2) {
-            SetCell(x, y, new benlib::steam());
+          if (cell == Cell::water && neighbor == Cell::fire) {
+            SetCell(x, y, Cell::steam);
             continue;
           }
 
           // If sand + fire -> glass
-          if (cell->get_id() == 3 && neighbor->get_id() == 2) {
-            SetCell(x, y, new benlib::glass());
+          if (cell == Cell::sand && neighbor == Cell::fire) {
+            SetCell(x, y, Cell::glass);
             continue;
           }
 
           // If water + plant -> plant
-          if (cell->get_id() == 1 && neighbor->get_id() == 6) {
-            SetCell(x, y, new benlib::plant());
+          if (cell == Cell::water && neighbor == Cell::plant) {
+            SetCell(x, y, Cell::plant);
             continue;
           }
 
           // If plant + fire -> fire
-          if (cell->get_id() == 6 && neighbor->get_id() == 2) {
-            SetCell(x, y, new benlib::fire());
+          if (cell == Cell::plant && neighbor == Cell::fire) {
+            SetCell(x, y, Cell::fire);
             continue;
           }
         }
@@ -282,7 +231,7 @@ void benlib::sendbox::RandomFill()
   //  random<benlib::cell>((*grid), 0, 7);
 }
 
-void benlib::sendbox::Fill(const uint64_t value)
+void benlib::sendbox::Fill(const Cell value)
 {
   for (uint64_t x = 0; x < GetWidth(); x++) {
     for (uint64_t y = 0; y < GetHeight(); y++) {
@@ -309,7 +258,7 @@ benlib::sendbox& benlib::sendbox::operator=(const benlib::sendbox& other)
   // return *this;
 }
 
-void benlib::sendbox::Circle(const uint64_t x, const uint64_t y, const uint64_t r, const uint64_t id)
+void benlib::sendbox::Circle(const uint64_t x, const uint64_t y, const uint64_t r, const Cell id)
 {
   // std::cout << "Circle(" << x << ", " << y << ", " << r << ", " << id << ")" << std::endl;
   /*
@@ -344,7 +293,7 @@ void benlib::sendbox::Circle(const uint64_t x, const uint64_t y, const uint64_t 
 }
 
 void benlib::sendbox::Rectangle(
-    const uint64_t x, const uint64_t y, const uint64_t w, const uint64_t h, const uint64_t id)
+    const uint64_t x, const uint64_t y, const uint64_t w, const uint64_t h, const Cell id)
 {
   // std::cout << "Rectangle(" << x << ", " << y << ", " << w << ", " << h << ", " << id << ")" << std::endl;
 #if defined(_OPENMP)
@@ -357,11 +306,6 @@ void benlib::sendbox::Rectangle(
       }
     }
   }
-}
-
-benlib::cell* benlib::sendbox::operator()(const uint64_t x, const uint64_t y)
-{
-  return grid[x * GetHeight() + y].get();
 }
 
 /*

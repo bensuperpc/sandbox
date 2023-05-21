@@ -2,19 +2,15 @@
 # depends on being added from it, i.e. the testing is done only from the build
 # tree and is not feasible from an install location
 
-project(game-of-lifeTests LANGUAGES C CXX)
+project(GTA_SA_cheat_finderTests LANGUAGES C CXX)
 
 # ---- Tests ----
-
-#add_executable(game-of-life_test source/game-of-life_test.cpp)
-#target_link_libraries(game-of-life_test PRIVATE sandbox_lib)
-#target_compile_features(game-of-life_test PRIVATE cxx_std_20)
-
-#add_test(NAME game-of-life_test COMMAND game-of-life_test)
 
 function(add_test_fn TEST_NAME)
   add_executable("${TEST_NAME}" "source/${TEST_NAME}.cpp")
   target_link_libraries("${TEST_NAME}" PRIVATE sandbox_lib gtest_main)
+  #target_include_directories("${TEST_NAME}" PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/source)
+
   if (OpenMP_FOUND OR OpenMP_CXX_FOUND)
     target_link_libraries("${TEST_NAME}" PRIVATE OpenMP::OpenMP_CXX)
   endif()
@@ -44,9 +40,9 @@ include(../cmake/lib/gtest.cmake)
 include(../cmake/lib/benchmark.cmake)
   # Add tests
   add_test_fn(sandbox_test)
-  
+
   # Add bench
-  #add_bench_fn(sandbox_bench)
+  add_bench_fn(sandbox_bench)
 endif()
 
 

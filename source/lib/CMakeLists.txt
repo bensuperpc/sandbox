@@ -36,26 +36,10 @@ include(../../cmake/lib/vector.cmake)
 
 set(SRCS
     source/sandbox.cpp
-    source/cell.cpp
-    source/sand.cpp
-    source/water.cpp
-    source/fire.cpp
-    source/air.cpp
-    source/steam.cpp
-    source/glass.cpp
-    source/plant.cpp
 	)
 	
 set(HEADERS
     source/sandbox.hpp
-    source/cell.hpp
-    source/sand.hpp
-    source/water.hpp
-    source/fire.hpp
-    source/air.hpp
-    source/steam.hpp
-    source/glass.hpp
-    source/plant.hpp
     )
 
 add_library(sandbox_lib ${SRCS} ${HEADERS})
