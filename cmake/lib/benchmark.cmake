@@ -6,9 +6,11 @@ set(CMAKE_CXX_CLANG_TIDY_TMP "${CMAKE_CXX_CLANG_TIDY}")
 set(CMAKE_CXX_CLANG_TIDY "")
 
 FetchContent_Declare(
-  googlebenchmark
-  GIT_REPOSITORY https://github.com/google/benchmark.git
-  GIT_TAG 1531ee0d634d8563da6a3f36ea2597c95d1c2d46) # 11-07-2022
+    googlebenchmark
+    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_TAG b177433f3ee2513b1075140c723d73ab8901790f
+    #GIT_SHALLOW TRUE
+    ) # 21-04-2023
 
 # Disable tests on google benchmark
 set(BENCHMARK_ENABLE_TESTING

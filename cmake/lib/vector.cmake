@@ -5,6 +5,6 @@ include(FetchContent)
 FetchContent_Declare(
   vector
   GIT_REPOSITORY https://github.com/bensuperpc/vector.git
-  GIT_TAG ecdd19fb025bbd649b955d7b6820f9599b9340d8) # 18-07-2022
+  GIT_TAG 9febb9c84e7b73e6c621afd920dd3c8bb47a130c) # 2022-10-23
 
 FetchContent_MakeAvailable(vector)
