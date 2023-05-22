@@ -10,7 +10,7 @@
 static void sandbox_update_bench(benchmark::State &state) {
     // Code inside this loop is measured repeatedly
     auto range = state.range(0);
-    auto sandbox = benlib::sendbox(range, range);
+    auto sandbox = benlib::Sandbox(range, range);
 
     for (auto _ : state) {
         benchmark::DoNotOptimize(sandbox);

@@ -1,8 +1,8 @@
 #include "sandbox.hpp"
 
-benlib::sendbox::sendbox() {}
+benlib::Sandbox::Sandbox() {}
 
-benlib::sendbox::sendbox(const uint64_t _width, const uint64_t _height) {
+benlib::Sandbox::Sandbox(const uint64_t _width, const uint64_t _height) {
     this->width = _width;
     this->height = _height;
 
@@ -10,32 +10,32 @@ benlib::sendbox::sendbox(const uint64_t _width, const uint64_t _height) {
     std::fill(grid.begin(), grid.end(), Cell::air);
 }
 
-benlib::sendbox::~sendbox() {}
+benlib::Sandbox::~Sandbox() {}
 
-uint64_t benlib::sendbox::GetWidth() const noexcept { return this->width; }
+uint64_t benlib::Sandbox::GetWidth() const noexcept { return this->width; }
 
-uint64_t benlib::sendbox::GetHeight() const noexcept { return this->height; }
+uint64_t benlib::Sandbox::GetHeight() const noexcept { return this->height; }
 
-void benlib::sendbox::Resize(const uint64_t width, const uint64_t height) {
+void benlib::Sandbox::Resize(const uint64_t width, const uint64_t height) {
     // If old grid is same size as new grid, do nothing
     if (width == GetWidth() && height == GetHeight())
         return;
     grid.resize(width * height);
 }
 
-void benlib::sendbox::Reset() { std::fill(grid.begin(), grid.end(), Cell::air); }
+void benlib::Sandbox::Reset() { std::fill(grid.begin(), grid.end(), Cell::air); }
 
-uint64_t benlib::sendbox::GetCells() const noexcept { return GetWidth() * GetHeight(); }
+uint64_t benlib::Sandbox::GetCells() const noexcept { return GetWidth() * GetHeight(); }
 
-uint64_t benlib::sendbox::GetGenerations() const noexcept { return generations; }
+uint64_t benlib::Sandbox::GetGenerations() const noexcept { return generations; }
 
-void benlib::sendbox::SetGenerations(const uint64_t _generations) { this->generations = _generations; }
+void benlib::Sandbox::SetGenerations(const uint64_t _generations) { this->generations = _generations; }
 
-void benlib::sendbox::SetCell(const uint64_t x, const uint64_t y, const Cell id) { grid[x * GetHeight() + y] = id; }
+void benlib::Sandbox::SetCell(const uint64_t x, const uint64_t y, const Cell id) { grid[x * GetHeight() + y] = id; }
 
-Cell &benlib::sendbox::GetCell(const uint64_t x, const uint64_t y) { return grid[x * GetHeight() + y]; }
+Cell &benlib::Sandbox::GetCell(const uint64_t x, const uint64_t y) { return grid[x * GetHeight() + y]; }
 
-void benlib::sendbox::Print() {
+void benlib::Sandbox::Print() {
     /*
     for (uint64_t x = 0; x < GetWidth(); x++) {
       for (uint64_t y = 0; y < GetHeight(); y++) {
@@ -50,7 +50,7 @@ void benlib::sendbox::Print() {
     */
 }
 
-void benlib::sendbox::Update() {
+void benlib::Sandbox::Update() {
     generations++;
 
     // clone the grid
@@ -119,12 +119,12 @@ void benlib::sendbox::Update() {
     }
 }
 
-void benlib::sendbox::Clear() {
+void benlib::Sandbox::Clear() {
     grid.clear();
     // grid2D.ShrinkToFit();
 }
 
-void benlib::sendbox::RandomFill() {
+void benlib::Sandbox::RandomFill() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 1);
@@ -136,7 +136,7 @@ void benlib::sendbox::RandomFill() {
     }
 }
 
-void benlib::sendbox::Fill(const Cell value) {
+void benlib::Sandbox::Fill(const Cell value) {
     for (uint64_t x = 0; x < GetWidth(); x++) {
         for (uint64_t y = 0; y < GetHeight(); y++) {
             SetCell(x, y, value);
@@ -144,22 +144,22 @@ void benlib::sendbox::Fill(const Cell value) {
     }
 }
 
-bool benlib::sendbox::operator==(const benlib::sendbox &other) const {
+bool benlib::Sandbox::operator==(const benlib::Sandbox &other) const {
     // return grid2D == other.grid2D;
 }
 
-bool benlib::sendbox::operator!=(const benlib::sendbox &other) const {
+bool benlib::Sandbox::operator!=(const benlib::Sandbox &other) const {
     // return grid2D != other.grid2D;
 }
 
-benlib::sendbox &benlib::sendbox::operator=(const benlib::sendbox &other) {
+benlib::Sandbox &benlib::Sandbox::operator=(const benlib::Sandbox &other) {
     // if (this == &other)
     //     return *this;
     // grid2D = other.grid2D;
     // return *this;
 }
 
-void benlib::sendbox::SetCircle(const uint64_t x, const uint64_t y, const uint64_t r, const Cell id) {
+void benlib::Sandbox::SetCircle(const uint64_t x, const uint64_t y, const uint64_t r, const Cell id) {
     // std::cout << "Circle(" << x << ", " << y << ", " << r << ", " << id << ")" << std::endl;
     /*
     #if defined(_OPENMP)
@@ -192,7 +192,7 @@ void benlib::sendbox::SetCircle(const uint64_t x, const uint64_t y, const uint64
     }
 }
 
-void benlib::sendbox::SetRectangle(const uint64_t x, const uint64_t y, const uint64_t w, const uint64_t h, const Cell id) {
+void benlib::Sandbox::SetRectangle(const uint64_t x, const uint64_t y, const uint64_t w, const uint64_t h, const Cell id) {
     // std::cout << "Rectangle(" << x << ", " << y << ", " << w << ", " << h << ", " << id << ")" << std::endl;
 #if defined(_OPENMP)
 #pragma omp parallel for collapse(2) schedule(auto)
@@ -207,7 +207,7 @@ void benlib::sendbox::SetRectangle(const uint64_t x, const uint64_t y, const uin
 }
 
 /*
-void benlib::sendbox::Deserialize(const std::string& filename)
+void benlib::Sandbox::Deserialize(const std::string& filename)
 {
   std::ifstream file(filename);
   if (!file.is_open()) {
@@ -243,7 +243,7 @@ void benlib::sendbox::Deserialize(const std::string& filename)
   this->grid2D.SetGrid(new_grid);
 }
 
-void benlib::sendbox::Serialize(const std::string& filename)
+void benlib::Sandbox::Serialize(const std::string& filename)
 {
   std::ofstream file(filename);
   if (!file.is_open()) {

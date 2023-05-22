@@ -25,14 +25,14 @@ enum class Cell : uint8_t { air = 0, fire = 1, glass = 2, plant = 3, sand = 4, s
 
 namespace benlib {
 // A class for representing a game of life.
-class sendbox {
+class Sandbox {
   public:
-    sendbox();
+    Sandbox();
     // Constructor.
-    sendbox(const uint64_t width, const uint64_t height);
+    Sandbox(const uint64_t width, const uint64_t height);
 
     // Destructor.
-    ~sendbox();
+    ~Sandbox();
     // Get the width of the game of life.
     uint64_t GetWidth() const noexcept;
     // Get the height of the game of life.
@@ -71,11 +71,11 @@ class sendbox {
     void Reset();
 
     // Overload operator== to compare a game of life.
-    bool operator==(const sendbox &gol) const;
+    bool operator==(const Sandbox &gol) const;
     // Overload operator= to copy a game of life.
-    sendbox &operator=(const sendbox &gol);
+    Sandbox &operator=(const Sandbox &gol);
     // Overload operator!= to compare a game of life.
-    bool operator!=(const sendbox &gol) const;
+    bool operator!=(const Sandbox &gol) const;
 
     // Save the game of life to a file.
     // void Serialize(const std::string& filename);

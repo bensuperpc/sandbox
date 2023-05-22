@@ -53,7 +53,7 @@ auto main() -> int {
     float brushSize = 20.0f;
 
     Cell selectedElement = Cell::air;
-    auto sandbox = benlib::sendbox(screenWidth, screenHeight);
+    auto sandbox = benlib::Sandbox(screenWidth, screenHeight);
 
     uint64_t framesCounter = 0;
 
